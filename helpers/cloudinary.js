@@ -7,3 +7,7 @@ cloudinary.config({
 });
 
 module.exports = cloudinary;
+
+git remote add origin https://github.com/shaifsab/testing-e-commerce.git
+git branch -M main
+git push -u origin main
