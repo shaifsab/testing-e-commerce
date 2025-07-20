@@ -1,7 +1,5 @@
 # E-Commerce Platform
 
-![E-Commerce Banner](https://path-to-your-image.png)
-
 A modern e-commerce platform built with **Node.js**, **Express**, **MongoDB**, and **Cloudinary** for image storage. This platform features a user-friendly interface, smooth product management, and secure user authentication.
 
 ## 🛠️ Technologies Used
@@ -53,5 +51,14 @@ A modern e-commerce platform built with **Node.js**, **Express**, **MongoDB**, a
 
 5. The application will run on `http://localhost:8000`.
 
-## 📂 Folder Structure
+## 💡 Contributing
 
+We welcome contributions! If you find any bugs or want to add new features, feel free to fork the repository, make changes, and submit a pull request.
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+Made with ❤️ by [Your Name]
