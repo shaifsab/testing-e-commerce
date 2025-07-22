@@ -1,45 +1,69 @@
-const express = require("express");  
-const { createCategory, retrieveAllCategories,} = require("../../controllers/categoryController");
+const express = require("express");
 
+// Controllers
+const { 
+  createCategory, 
+  retrieveAllCategories 
+} = require("../../controllers/categoryController");
+
+const { 
+  createProduct, 
+  updateProduct, 
+  getAllProducts, 
+  deleteProduct 
+} = require("../../controllers/productController");
+
+const { 
+  addtocart, 
+  updateCartItem, 
+  deleteCartItem, 
+  getCart 
+} = require("../../controllers/cartControllers");
+
+// Helper and middleware imports
 const upload = require("../../helpers/multerConfig"); 
 const RoleCheck = require("../../middleware/roleMiddleware");  
 const authMiddleware = require("../../middleware/authMiddleware"); 
 
-const {createProduct,updateProduct,getAllProducts,deleteProduct,} = require("../../controllers/productController");
+// Initialize router instance
+const router = express.Router();
+ 
+//  CATEGORY ROUTES
 
-const router = express.Router(); 
-
-// Route to create a new category
-router.post( "/createcategory",upload.single("category"), createCategory);
+// Route to create a new category with an image
+router.post("/create-category", upload.single("category"), createCategory);
 
 // Route to retrieve all categories
 router.get("/categories", retrieveAllCategories);
 
-// Route to create a new product
-router.post(
-  "/create",  upload.fields([ 
-    { name: "mainImg", maxCount: 1 }, 
-    { name: "images", maxCount: 8 }, 
-  ]),
-  createProduct  
-);
+
+//  PRODUCT ROUTES
+
+// Route to create a new product with images
+router.post("/create", upload.fields([
+  { name: "mainImg", maxCount: 1 },  // Single main product image
+  { name: "images", maxCount: 8 },   // Up to 8 additional product images
+]), createProduct);
 
 // Route to update an existing product
-router.post(
-  "/update/:slug",  
-  upload.fields([
-    { name: "mainImg", maxCount: 1 },
-    { name: "images", maxCount: 8 },
-  ]),
-  updateProduct 
-);
+router.post("/update/:slug", upload.fields([
+  { name: "mainImg", maxCount: 1 },  // Single main product image
+  { name: "images", maxCount: 8 },   // Up to 8 additional product images
+]), updateProduct);
 
-router.get("/productlist", getAllProducts);
+// Route to get all products
+router.get("/product-list", getAllProducts);
 
-// Route to delete a product
-router.delete(
-  "/deleteproduct/:productID", authMiddleware, RoleCheck(["admin"]), deleteProduct  
-);
+// Route to delete a product by its ID
+router.delete("/delete-product/:productID", authMiddleware, RoleCheck(["admin"]), deleteProduct);
 
-// Export the router for use in the app
+
+//  CART ROUTES
+router.post("/add-to-cart", authMiddleware, addtocart);
+router.put("/update-cart", authMiddleware, updateCartItem);
+router.delete("/delete-cart-item/:productId", authMiddleware, deleteCartItem);
+router.get("/get-cart", authMiddleware, getCart);
+
+
+
 module.exports = router;
