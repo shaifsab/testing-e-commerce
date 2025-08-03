@@ -1,96 +1,71 @@
 const mongoose = require("mongoose");
 
-// Schema for individual items in an order
+// Define the schema for an order item
 const OrderItemSchema = new mongoose.Schema({
-  // The product that is ordered, referenced from the Product model
   product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product", // Reference to Product model
-    required: true,  // The product is mandatory
+    type: mongoose.Schema.Types.ObjectId, // Refers to the Product model
+    ref: "Product", // This links the OrderItem to a Product
+    required: true, // Ensures the product is required for each order item
   },
-  
-  // Quantity of the product ordered
   quantity: {
-    type: Number,
-    required: true, // The quantity is mandatory
-    min: 1,         // Quantity must be at least 1
+    type: Number, // The quantity of the product being ordered
+    required: true, // Quantity is required
+    min: 1, // Ensures quantity cannot be less than 1
   },
-  
-  // Selected variants of the product, such as color or size
   selectedVariants: [
     {
-      variantType: String, // Type of variant (e.g., color, size)
-      option: String,      // Selected option for that variant (e.g., 'Red', 'M')
+      variantType: String, // Type of the variant (e.g., 'color', 'size')
+      option: String, // The specific option selected (e.g., 'Red', 'M')
     },
   ],
-  
-  // Price of the item, including base price and any additional costs from variants
   price: {
-    type: Number,         // The price should be a number
-    required: true,       // The price is mandatory
+    type: Number, // Price for this particular order item (calculated from base price and variant prices)
+    required: true, // Price is required for each order item
   },
 });
 
-// Main order schema
+// Define the order schema
 const orderSchema = mongoose.Schema(
   {
-    // The user who placed the order, referenced from the User model
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,      // The user is mandatory for the order
-      ref: "User",         // Reference to the User model
+      type: mongoose.Schema.Types.ObjectId, // Refers to the User model
+      required: true, // Ensures a user is associated with the order
+      ref: "User",
     },
-    
-    // Array of items in the order, using the OrderItemSchema
-    orderItems: [OrderItemSchema],
-    
-    // Shipping address for the order
+    orderItems: [OrderItemSchema], // Array of items in the order, based on the OrderItemSchema
     shippingAddress: {
-      address: { type: String, required: true }, // Address is mandatory
+      address: { type: String, required: true }, // Shipping address for the order
     },
-    
-    // Phone number of the user for delivery contact
     phone: {
-      type: String,
-      required: true, // Phone number is mandatory
+      type: String, // The phone number for contacting the customer
+      required: true, // Phone number is required
     },
-    
-    // Order status with predefined possible values
     status: {
-      type: String,
-      enum: ["pending", "processing", "shipped", "delivered", "cancelled"], // Valid status values
-      default: "pending",  // Default status is 'pending'
+      type: String, // The current status of the order
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"], // Valid statuses for the order
+      default: "pending", // Default status is 'pending'
     },
-    
-    // Payment result details, including status and update time
     paymentResult: {
-      id: { type: String },      // Payment ID
+      id: { type: String }, // Payment ID from the payment gateway
       status: {
-        type: String,
-        default: "pending",     // Default payment status is 'pending'
-        enum: ["pending", "complete"],  // Valid payment statuses
+        type: String, // The status of the payment
+        default: "pending", // Default payment status
+        enum: ["pending", "complete"], // Valid payment statuses
       },
-      update_time: { type: String }, // Time when payment was updated
+      update_time: { type: String }, // Timestamp of when the payment status was last updated
     },
-    
-    // Total price of the order, including all items and additional costs
-    totalPrice: { type: Number, required: true },
-    
-    // Boolean indicating whether the order has been paid
-    isPaid: { type: Boolean, default: false },
-    
-    // Date when payment was made (if applicable)
-    paidAt: { type: Date },
-    
-    // Boolean indicating whether the order has been delivered
-    isDelivered: { type: Boolean, default: false },
-    
-    // Date when the order was delivered (if applicable)
-    deliveredAt: { type: Date },
+    totalPrice: { type: Number, required: true }, // The total price of the order
+    isPaid: { type: Boolean, default: false }, // Whether the order has been paid
+    paidAt: { type: Date }, // Date and time when the payment was made
+    isDelivered: { type: Boolean, default: false }, // Whether the order has been delivered
+    deliveredAt: { type: Date }, // Date and time when the order was delivered
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId, // Refers to the User model for who last updated the order
+      ref: "User",
+    },
   },
   {
-    // Automatically adds createdAt and updatedAt timestamps
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt timestamps
   }
 );
 
